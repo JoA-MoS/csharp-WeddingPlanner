@@ -11,11 +11,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
-namespace WeddingPlanner.CustomAttributes {
-    public class PastDateAttribute : ValidationAttribute {
-        public override bool IsValid(object value) {
+namespace WeddingPlanner.CustomAttributes
+{
+    public class PastDateAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
             DateTime d = Convert.ToDateTime(value);
             return d <= DateTime.Now;
+
+        }
+    }
+
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            DateTime d = Convert.ToDateTime(value);
+            return d > DateTime.Now;
 
         }
     }

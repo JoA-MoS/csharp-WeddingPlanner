@@ -4,28 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WeddingPlanner.Controllers {
+namespace WeddingPlanner.Controllers
+{
 
 
-    public class HomeController : Controller {
-        public IActionResult Index() {
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
             // return View();
-            return View();
+            return RedirectToAction("Dashboard", "Weddings");
+
         }
 
-        public IActionResult About() {
+        public IActionResult About()
+        {
             ViewData["Message"] = "Your application description page.";
 
             return View();
         }
 
-        public IActionResult Contact() {
+        public IActionResult Contact()
+        {
             ViewData["Message"] = "Your contact page.";
 
             return View();
         }
 
-        public IActionResult Error() {
+        public IActionResult Error()
+        {
             return View();
         }
     }

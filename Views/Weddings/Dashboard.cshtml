@@ -1,0 +1,55 @@
+@using System.Linq
+
+@model List<Wedding>
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Welcome to the Wedding Planner";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Wedding</th>
+            <th>Date</th>
+            <th>Guests</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Wedding w in @Model)
+        {
+            <tr>
+                <td><a asp-controller="Weddings" asp-action="GetWedding" asp-route-weddingId="@w.WeddingId">@w.Name</a></td>
+                <td>@w.Date.ToString("MMMM d, yyyy")</td>
+                <td>@w.GuestCount</td>
+                <td>
+                    @if(w.OwnerId != @UserManager.GetUserId(User))
+                    {
+                       
+                        @if(w.WeddingGuests.Any(wg => wg.GuestId == @UserManager.GetUserId(User)))
+                        {
+
+                            <a asp-controller="Weddings" asp-action="LeaveWedding" asp-route-weddingId="@w.WeddingId">Un-RSVP</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Weddings" asp-action="JoinWedding" asp-route-weddingId="@w.WeddingId">RSVP</a>
+                        }
+                       
+                    }
+                    else
+                    {
+                        <a asp-controller="Weddings" asp-action="DeleteWedding" asp-route-weddingId="@w.WeddingId">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
