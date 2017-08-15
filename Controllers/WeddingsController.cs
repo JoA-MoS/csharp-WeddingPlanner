@@ -31,12 +31,12 @@ namespace Weddings.Controllers
         }
 
         [HttpGet("dashboard")]
-        public IActionResult dashboard()
+        public IActionResult Dashboard()
         {
             var userId = _userManager.GetUserId(User);
             List<Wedding> weddings = _context.Weddings.Where(w => w.Date >= DateTime.Now)
                                         .Include(w => w.WeddingGuests).ToList();
-            return View("dashboard", weddings);
+            return View("Dashboard", weddings);
         }
 
         [HttpGet("{weddingId:int}")]
@@ -66,7 +66,7 @@ namespace Weddings.Controllers
             }
 
 
-            return RedirectToAction("dashboard");
+            return RedirectToAction("Dashboard");
 
         }
 
@@ -93,7 +93,7 @@ namespace Weddings.Controllers
             }
 
 
-            return RedirectToAction("dashboard");
+            return RedirectToAction("Dashboard");
 
         }
 
@@ -111,7 +111,7 @@ namespace Weddings.Controllers
             }
 
 
-            return RedirectToAction("dashboard");
+            return RedirectToAction("Dashboard");
 
         }
 
