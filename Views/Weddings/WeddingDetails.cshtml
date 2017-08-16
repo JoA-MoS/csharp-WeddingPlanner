@@ -16,3 +16,37 @@
     }
 </ul>
 
+<h3>Address:</h3>
+<p>@Model.Address</p>
+<div id="map"></div>
+    <script>
+       function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 11,
+          center: {lat: 47.6062, lng: -122.3321}
+        });
+        var geocoder = new google.maps.Geocoder();
+
+        
+          geocodeAddress(geocoder, map);
+
+      }
+
+      function geocodeAddress(geocoder, resultsMap) {
+        var address = '@Model.Address';
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_Y8DjDzHv1xrzmmnjOi4JoZPDIPKfajA&callback=initMap"
+    async defer></script>
+
