@@ -10,6 +10,9 @@ using WeddingPlanner.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using System.Threading.Tasks;
 
 namespace WeddingPlanner.CustomAttributes
 {
@@ -33,63 +36,79 @@ namespace WeddingPlanner.CustomAttributes
         }
     }
 
-    // [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    // public class VerifyOwnership : AuthorizeAttribute {
 
-    //     protected override bool Authorized(HttpContext httpContext, ActionExecutingContext filterContext) {
 
-    //         foreach (var args in filterContext.ActionArguments) {
-    //             var owned = args.Value as IHaveAnOwner;
-    //             System.Console.WriteLine(args.Value);
-    //             if (owned != null) {
-    //                 if (owned.OwnerId != httpContext.User.Identity.Name) {
-    //                     return false;
-    //                 }
-    //             }
+    // How can I make a model owner validator
+    // https://stackoverflow.com/questions/39256341/how-to-use-action-filters-with-dependency-injection-in-asp-net-core
+    // https://stackoverflow.com/questions/39181390/how-do-i-add-a-parameter-to-an-action-filter-in-asp-net
+    // https://msdn.microsoft.com/en-us/library/ee707357(v=vs.91).aspx
+    // https://stackoverflow.com/questions/31464359/how-do-you-create-a-custom-authorizeattribute-in-asp-net-core 
+    // https://stackoverflow.com/questions/12500085/model-ownership-checking
+    // 	    In MVC5 filterContext.ActionParameters has become filterContext.ActionDescriptor.GetParameters() (returns an array of System.Web.Mvc.ParameterDescriptor) – barbara.post Aug 3 at 9:28
+    // https://stackoverflow.com/questions/16649551/get-user-name-on-action-filter\
+    // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies
+
+    // public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
+    // {
+    //     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
+    //     {
+    //         if (!context.User.HasClaim(c => c.Type == ClaimTypes.DateOfBirth &&
+    //                                    c.Issuer == "http://contoso.com"))
+    //         {
+    //             // .NET 4.x -> return Task.FromResult(0);
+    //             return Task.CompletedTask;
     //         }
-    //         return true;
+
+    //         var dateOfBirth = Convert.ToDateTime(context.User.FindFirst(
+    //             c => c.Type == ClaimTypes.DateOfBirth && c.Issuer == "http://contoso.com").Value);
+
+    //         int calculatedAge = DateTime.Today.Year - dateOfBirth.Year;
+    //         if (dateOfBirth > DateTime.Today.AddYears(-calculatedAge))
+    //         {
+    //             calculatedAge--;
+    //         }
+
+    //         if (calculatedAge >= requirement.MinimumAge)
+    //         {
+    //             context.Succeed(requirement);
+    //         }
+    //         return Task.CompletedTask;
     //     }
+    // }
 
-    //     public void OnActionExecuted(ActionExecutedContext filterContext) {
+    // public class MinimumAgeRequirement : IAuthorizationRequirement
+    // {
+    //     public int MinimumAge { get; private set; }
 
+    //     public MinimumAgeRequirement(int minimumAge)
+    //     {
+    //         MinimumAge = minimumAge;
     //     }
     // }
 
 
-    // public class RestoreModelStateFromTempDataAttribute : ActionFilterAttribute {
-    //     public override void OnActionExecuting(ActionExecutingContext filterContext) {
-    //         base.OnActionExecuting(filterContext);
 
-    //         var controller = filterContext.Controller as Controller;
-    //         var tempData = controller?.TempData?.Keys;
-    //         if (controller != null && tempData != null) {
-    //             if (tempData.Contains("ModelState")) {
-    //                 var modelStateString = controller.TempData["ModelState"].ToString();
-    //                 var listError = JsonConvert.DeserializeObject<Dictionary<string, string>>(modelStateString);
-    //                 var modelState = new ModelStateDictionary();
-    //                 foreach (var item in listError) {
-    //                     modelState.AddModelError(item.Key, item.Value ?? "");
+    // public class VerifyOwnership : AuthorizationFilterAttribute
+    // {
+    //     public void OnActionExecuting(HttpActionContext actionContext, ActionExecutingContext filterContext)
+    //     {
+    //         HttpContext
+    //             foreach (ParameterDescriptor parameter in filterContext.ActionDescriptor.Parameters)
+    //         {
+    //             var owned = parameter.ParameterType as IHaveAnOwner;
+    //             if (owned != null)
+    //             {
+    //                 if (owned.OwnerId != WebSecurity.CurrentUserId)
+    //                 {
+    //                     // ... not found or access denied
     //                 }
-
-    //                 controller.ViewData.ModelState.Merge(modelState);
     //             }
     //         }
     //     }
-    // }
 
-    // public class SetTempDataModelStateAttribute : ActionFilterAttribute {
-    //     public override void OnActionExecuted(ActionExecutedContext filterContext) {
-    //         base.OnActionExecuted(filterContext);
+    //     public void OnActionExecuted(ActionExecutedContext filterContext)
+    //     {
 
-    //         var controller = filterContext.Controller as Controller;
-    //         var modelState = controller?.ViewData.ModelState;
-    //         if (modelState != null) {
-    //             var listError = modelState.Where(x => x.Value.Errors.Any())
-    //                 .ToDictionary(m => m.Key, m => m.Value.Errors
-    //                 .Select(s => s.ErrorMessage)
-    //                 .FirstOrDefault(s => s != null));
-    //             controller.TempData["ModelState"] = JsonConvert.SerializeObject(listError);
-    //         }
     //     }
     // }
 }

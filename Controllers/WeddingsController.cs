@@ -53,7 +53,7 @@ namespace Weddings.Controllers
 
 
         [HttpGet("{weddingId:int}/delete")]
-
+        // [Authorize(Policy = "Over21")]
         public IActionResult DeleteWedding(int weddingId)
         {
             var userId = _userManager.GetUserId(User);
@@ -117,7 +117,6 @@ namespace Weddings.Controllers
 
 
         [HttpGet]
-
         public IActionResult Create()
         {
             return View("CreateWedding");

@@ -14,16 +14,22 @@ using WeddingPlanner.Data;
 using WeddingPlanner.Models;
 using WeddingPlanner.Services;
 using WeddingPlanner.Factories;
+using WeddingPlanner.CustomAttributes;
+using Microsoft.AspNetCore.Authorization;
 
-namespace WeddingPlanner {
-    public class Startup {
-        public Startup(IHostingEnvironment env) {
+namespace WeddingPlanner
+{
+    public class Startup
+    {
+        public Startup(IHostingEnvironment env)
+        {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
             }
@@ -35,7 +41,8 @@ namespace WeddingPlanner {
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services) {
+        public void ConfigureServices(IServiceCollection services)
+        {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
@@ -50,7 +57,8 @@ namespace WeddingPlanner {
             services.AddSession();
             services.AddMvc();
 
-            services.Configure<IdentityOptions>(options => {
+            services.Configure<IdentityOptions>(options =>
+            {
                 // Password settings
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 8;
@@ -73,7 +81,13 @@ namespace WeddingPlanner {
                 options.User.RequireUniqueEmail = true;
             });
 
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("Over21",
+            //                       policy => policy.Requirements.Add(new MinimumAgeRequirement(21)));
+            // });
 
+            // services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -81,16 +95,19 @@ namespace WeddingPlanner {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
             }
-            else {
+            else
+            {
                 app.UseExceptionHandler("/Home/Error");
             }
 
@@ -100,7 +117,8 @@ namespace WeddingPlanner {
             app.UseSession();
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
-            app.UseMvc(routes => {
+            app.UseMvc(routes =>
+            {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
