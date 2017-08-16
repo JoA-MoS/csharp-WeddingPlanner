@@ -18,7 +18,7 @@ namespace WeddingPlanner.Models.WeddingViewModels
         public string WedderTwo { get; set; }
 
         [Required]
-        [FutureDate]
+        [FutureDate(ErrorMessage = "Enter a future date")]
         [Display(Name = "Date")]
         public DateTime Date { get; set; }
 
